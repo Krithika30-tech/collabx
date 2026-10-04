@@ -6,8 +6,20 @@ const notFound = (req, res, next) => {
 
 // Central error handler: never exposes stack traces (NFR-04)
 const errorHandler = (err, req, res, next) => {
-  const statusCode = res.statusCode && res.statusCode !== 200 ? res.statusCode : 500;
-  res.status(statusCode).json({ message: err.message });
+  let status = res.statusCode && res.statusCode !== 200 ? res.statusCode : 500;
+  let message = err.message;
+
+  if (err.name === "CastError") {
+    status = 400;
+    message = "Invalid id";
+  }
+  if (err.name === "ValidationError") {
+    status = 400;
+  }
+  if (status === 500 && process.env.NODE_ENV === "production") {
+    message = "Server error";
+  }
+  res.status(status).json({ message });
 };
 
 module.exports = { notFound, errorHandler };

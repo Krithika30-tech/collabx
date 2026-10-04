@@ -51,4 +51,23 @@ const updateUser = async (req, res, next) => {
   }
 };
 
-module.exports = { getUser, updateUser };
+const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// GET /api/users?q=&skill=&interest=&experience=&availability=
+const getUsers = async (req, res, next) => {
+  try {
+    const { q, skill, interest, experience, availability } = req.query;
+    const filter = { role: "student" };
+    if (q) filter.name = new RegExp(escapeRegex(String(q)), "i");
+    if (skill) filter.skills = new RegExp(`^${escapeRegex(String(skill))}$`, "i");
+    if (interest) filter.interests = new RegExp(`^${escapeRegex(String(interest))}$`, "i");
+    if (experience) filter.experience = String(experience);
+    if (availability) filter.availability = new RegExp(`^${escapeRegex(String(availability))}$`, "i");
+    const users = await User.find(filter).limit(50);
+    res.json(users);
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { getUser, updateUser, getUsers };
