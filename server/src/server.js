@@ -13,6 +13,7 @@ app.use(express.json());
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "CollabX API is running" });
 });
+app.use("/api/auth", require("./routes/authRoutes"));
 
 // Must be last
 app.use(notFound);
