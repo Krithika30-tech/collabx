@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import api from "../api";
 import { useAuth } from "../context/AuthContext";
 import { errMsg } from "../utils";
+import Chat from "../components/Chat";
 
 export default function ProjectDetail() {
   const { id } = useParams();
@@ -203,6 +204,8 @@ export default function ProjectDetail() {
           </ul>
         </section>
       )}
+
+      {isMember && <Chat projectId={project._id} userId={user._id} />}
     </div>
   );
 }

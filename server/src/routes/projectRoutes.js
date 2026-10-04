@@ -1,6 +1,7 @@
 const express = require("express");
 const p = require("../controllers/projectController");
 const t = require("../controllers/taskController");
+const { getMessages } = require("../controllers/messageController");
 const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
@@ -12,5 +13,6 @@ router.post("/:id/join", p.joinProject);
 router.put("/:id/requests/:userId", p.respondToRequest);
 router.route("/:id/members/:userId").put(p.updateMemberRole).delete(p.removeMember);
 router.route("/:id/tasks").get(t.getTasks).post(t.createTask);
+router.get("/:id/messages", getMessages);
 
 module.exports = router;
